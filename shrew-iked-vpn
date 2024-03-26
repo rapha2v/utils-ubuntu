@@ -1,0 +1,46 @@
+# Testado apenas no Ubuntu 20.04
+
+## Shrew Iked VPN
+
+``````shell
+# Adicionando o repositório QT5 na sua máquina
+sudo apt-get install build-essential && \
+sudo apt-get install qtcreator && \
+sudo apt-get install qt5-default qt5-qmake -y && \
+
+# Dependências
+sudo apt install cmake libssl-dev libedit-dev flex bison -y && \
+
+# Copiando o projeto IKE para a sua máquina
+sudo git clone https://github.com/HayfaAbusnina/ike.git && \
+
+# Utilizando sed para sobrescrever o nome habusnina dos arquivos mostrados abaixo
+# Pode ser alterado manualmente entrando em ambos os arquivos
+sudo sed -i "s_habusnina_$(whoami)_gI" ~/ike/source/qikea/moc_qikea.cpp_parameters && \
+sudo sed -i "s_habusnina_$(whoami)_gI" ~/ike/source/qikec/moc_qikec.cpp_parameters && \
+
+# Montando e instalando o aplicativo
+cd ike && \
+sudo cmake -DCMAKE_INSTALL_PREFIX=/usr -DQTGUI=YES -DETCDIR=/etc -DNATT=YES && \
+sudo make && \
+sudo make install && \
+
+# Recarregando libs instaladas
+sudo ldconfig && \
+
+
+
+# Estes últimos três passos recomendo criar uma funćão chamada vpn
+# e botar em seu ~/.bashrc
+
+# Criando config file do arquivo
+sudo mv /etc/iked.conf.sample /etc/iked.conf && \
+
+# Iniciando IKE
+sudo iked && \
+
+# Iniciando interface gráfica
+qikea
+``````
+
+
